@@ -23,13 +23,13 @@ public class MainActivity extends AppCompatActivity {
         mSmartFloorView = (SmartFloorView) findViewById(R.id.smart_floor_view);
         mButton = (Button) findViewById(R.id.button_start_redraw);
 
-        mSmartFloorView.populateCanvas(10);
+        mSmartFloorView.populateCanvas(60);
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mSmartFloorView.clearCanvas();
-                mSmartFloorView.populateCanvas(10);
+                mSmartFloorView.populateCanvas(60);
                 mSmartFloorView.reDrawCanvas();
             }
         });

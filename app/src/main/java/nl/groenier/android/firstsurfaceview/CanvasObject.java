@@ -1,5 +1,8 @@
 package nl.groenier.android.firstsurfaceview;
 
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+
 /**
  * Created by Martijn on 23/11/2016.
  */
@@ -37,7 +40,7 @@ public class CanvasObject {
     }
 
     public void setOrientation(int orientation) {
-        this.orientation = orientation;
+        this.orientation = orientation % 360 ;
     }
 
 }

@@ -26,7 +26,12 @@ public class SmartFloorView extends SurfaceView implements SurfaceHolder.Callbac
     private PanelThread _thread;
     private Paint paint = new Paint();
 
-    private Bitmap leftFootImage = BitmapFactory.decodeResource(getResources(), R.drawable.shoe_sole_left);
+    private int canvasWidth;
+    private int canvasHeight;
+
+    private Bitmap image_left_foot = BitmapFactory.decodeResource(getResources(), R.drawable.shoe_sole_left);
+    private int bitmapCenterX = image_left_foot.getWidth() / 2;
+    private int bitmapCenterY = image_left_foot.getHeight() / 2;
 
     private List<CanvasObject> canvasObjectList = new ArrayList<>();
 
@@ -45,6 +50,11 @@ public class SmartFloorView extends SurfaceView implements SurfaceHolder.Callbac
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         setWillNotDraw(false); //Allows us to use invalidate() to call onDraw()
+
+        Canvas canvas = surfaceHolder.lockCanvas();
+        canvasWidth = canvas.getWidth();
+        canvasHeight = canvas.getHeight();
+        surfaceHolder.unlockCanvasAndPost(canvas);
 
         _thread = new PanelThread(getHolder(), this); //Start the thread that
         _thread.setRunning(true);                     //will make calls to
@@ -66,34 +76,19 @@ public class SmartFloorView extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawColor(Color.WHITE);
-
-        for (CanvasObject item : canvasObjectList) {
-            Matrix matrix = new Matrix();
-            matrix.postRotate(item.getOrientation(), leftFootImage.getWidth()/2, leftFootImage.getHeight()/2);
-            matrix.postTranslate(item.getX(), item.getY());
-            canvas.drawBitmap(leftFootImage,matrix,paint);
-        }
-
-        updateAllCanvasObjects();
-
         super.onDraw(canvas);
     }
 
-    private void updateAllCanvasObjects() {
-        for(CanvasObject item : canvasObjectList){
-            updateCanvasObject(item);
-        }
+    private void updateAllCanvasObjects(Canvas canvas) {
 
         Iterator<CanvasObject> iter = canvasObjectList.iterator();
 
         while (iter.hasNext()) {
-            CanvasObject object = iter.next();
+            CanvasObject canvasObject = iter.next();
 
-            int x = object.getX();
-            int y = object.getY();
-
-            if(!(x < 300 && y < 300)) {
+            if(canvasObject.getX() < canvasWidth && canvasObject.getY() < canvasHeight) {
+                updateCanvasObject(canvasObject);
+            } else {
                 iter.remove();
             }
         }
@@ -101,22 +96,14 @@ public class SmartFloorView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     private void updateCanvasObject(CanvasObject canvasObject) {
-        int x = canvasObject.getX();
-        int y = canvasObject.getY();
-        int orientation = canvasObject.getOrientation();
-
-        int transX = 1;
-        int transY = 1;
-        int transOrientation = 5;
-
-        canvasObject.setX(x + transX);
-        canvasObject.setY(y + transY);
-        canvasObject.setOrientation(orientation + transOrientation);
+        canvasObject.setX(canvasObject.getX() + 2);
+        canvasObject.setY(canvasObject.getY() + 1);
+        canvasObject.setOrientation(canvasObject.getOrientation() + 5);
     }
 
     public void populateCanvas(int quantity) {
         for(int i = 0; i < quantity; i++) {
-            canvasObjectList.add(new CanvasObject(random.nextInt(200),random.nextInt(200),random.nextInt(360)));
+            canvasObjectList.add(new CanvasObject(random.nextInt(500),random.nextInt(500),random.nextInt(360)));
         }
     }
 
@@ -162,7 +149,17 @@ public class SmartFloorView extends SurfaceView implements SurfaceHolder.Callbac
                     c = _surfaceHolder.lockCanvas(null);
                     synchronized (_surfaceHolder) {
 
-                        //Insert methods to modify positions of items in onDraw()
+                        c.drawColor(Color.WHITE);
+
+                        for (CanvasObject item : canvasObjectList) {
+                            Matrix matrix = new Matrix();
+                            matrix.postRotate(item.getOrientation(), bitmapCenterX, bitmapCenterY);
+                            matrix.postTranslate(item.getX(), item.getY());
+                            c.drawBitmap(image_left_foot,matrix,paint);
+                        }
+
+                        updateAllCanvasObjects(c);
+
                         reDrawCanvas();
 
                     }
