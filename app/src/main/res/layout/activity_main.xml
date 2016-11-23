@@ -12,12 +12,21 @@
     tools:context="nl.groenier.android.firstsurfaceview.MainActivity">
 
     <TextView
+        android:id="@+id/text_view_intro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"/>
     
     <nl.groenier.android.firstsurfaceview.SmartFloorView
+        android:id="@+id/smart_floor_view"
         android:layout_width="match_parent"
         android:layout_height="400dp"/>
+
+    <Button
+        android:id="@+id/button_start_redraw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/smart_floor_view"
+        android:text="Redraw"/>
     
 </RelativeLayout>
