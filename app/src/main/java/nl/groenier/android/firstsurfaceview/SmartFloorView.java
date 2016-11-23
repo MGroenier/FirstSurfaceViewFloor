@@ -29,6 +29,12 @@ public class SmartFloorView extends SurfaceView implements SurfaceHolder.Callbac
     private int canvasWidth;
     private int canvasHeight;
 
+    private int gridPointDistanceLengthOfFloor;
+    private int gridPointDistanceWidthOfFloor;
+
+    private float quantityTagPointsLenghtOfFloor = 200;
+    private float quantityTagPointsWidthOfFloor = 150;
+
     private Bitmap image_left_foot = BitmapFactory.decodeResource(getResources(), R.drawable.shoe_sole_left);
     private int bitmapCenterX = image_left_foot.getWidth() / 2;
     private int bitmapCenterY = image_left_foot.getHeight() / 2;
@@ -55,6 +61,9 @@ public class SmartFloorView extends SurfaceView implements SurfaceHolder.Callbac
         canvasWidth = canvas.getWidth();
         canvasHeight = canvas.getHeight();
         surfaceHolder.unlockCanvasAndPost(canvas);
+
+        gridPointDistanceLengthOfFloor = Math.round(canvasWidth / quantityTagPointsLenghtOfFloor);
+        gridPointDistanceWidthOfFloor = Math.round(canvasHeight / quantityTagPointsWidthOfFloor);
 
         _thread = new PanelThread(getHolder(), this); //Start the thread that
         _thread.setRunning(true);                     //will make calls to
@@ -96,8 +105,8 @@ public class SmartFloorView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     private void updateCanvasObject(CanvasObject canvasObject) {
-        canvasObject.setX(canvasObject.getX() + 2);
-        canvasObject.setY(canvasObject.getY() + 1);
+        canvasObject.setX(canvasObject.getX() + gridPointDistanceLengthOfFloor);
+        canvasObject.setY(canvasObject.getY() + gridPointDistanceWidthOfFloor);
         canvasObject.setOrientation(canvasObject.getOrientation() + 5);
     }
 
